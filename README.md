@@ -9,8 +9,10 @@ The user container is available on the robot by default at `/data/user/container
 
 1. SSH into the robot
 2. Remove the current user container files
-    > [!WARNING]
-    > This will remove all files in the user container directory. Make sure to back up any files you want to keep.
+   
+> [!WARNING]
+> This will remove all files in the user container directory. Make sure to back up any files you want to keep.
+    
     ```bash
     rm -rf /data/user/containers
     ```
