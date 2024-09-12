@@ -1,13 +1,13 @@
 # User container for the Origin
 
-The user container is an example container that can be used to develop on the robot. It comes pre-installed with ROS and the necessary dependencies to run the robot. 
+The user container is an example container that can be used to develop on the Origin. It comes pre-installed with ROS and the necessary dependencies to develop for the Origin. 
 
-This guide will walk you through how to use the user container to develop on the robot.
+This guide will walk you through how to use the user container to develop on the Origin.
 
 ## Setting up the user container
-The user container is available on the robot by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
+The user container is available on the Origin by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
 
-1. SSH into the robot
+1. SSH into the Origin
 2. Remove the current user container files
    
 > [!WARNING]
@@ -16,7 +16,7 @@ The user container is available on the robot by default at `/data/user/container
     ```bash
     rm -rf /data/user/containers
     ```
-3. Clone the user container files to the robot
+3. Clone the user container files to the Origin
     ```bash
     git clone --branch origin https://github.com/avular-robotics/user-container.git /data/user/containers
     ```
@@ -27,8 +27,7 @@ The user container is available on the robot by default at `/data/user/container
     ```
 
 ## Using the user container for development
-We suggest that you do all your development inside the user container. This will ensure that your code runs on the robot as expected and will not be lost 
-when the robot is updated.
+We suggest that you do all your development inside the user container. This will ensure that your code runs on the Origin as expected and will not be lost when the Origin is updated.
 
 First of all, you need to start the user container. You can do this by running the following command:
 ```bash
@@ -41,10 +40,10 @@ To enter the user container, you can run the following command:
 docker exec -it user /bin/bash
 ```
 
-You can now start developing on the robot. In the container, we have an user named `user`. 
+You can now start developing on the Origin. In the container, we have an user named `user`. 
 This user has sudo rights, so you can install packages and run commands as root. When entering 
 the container, you will be in the `/home/user/ws` directory. This is the workspace directory 
-where you can start developing your code. This workspace directory is also mounted from the robot,
+where you can start developing your code. This workspace directory is also mounted from the host OS,
 this is done so that you can easily `down` and `up` the container without losing your code. 
 
 > [!WARNING]
@@ -56,5 +55,5 @@ can just install it in the container. If you are happy with the package you can 
 After adding the package to the `Dockerfile` you need to rebuild the container. You can do this by running
 the following command from the `/data/user/containers` directory:
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
