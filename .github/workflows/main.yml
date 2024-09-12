@@ -1,10 +1,20 @@
-name: Build User Container
+name: main
 
 on:
   push:
-    tags:
-      - '*'  
-  
+    branches:
+      - main
+      - origin
+      - vertex
+  pull_request:
+    branches:
+      - main
+      - origin
+      - vertex
+
+concurrency:
+  group: main-${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -35,8 +45,9 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        push: true
+        push: ${{ github.ref_name == 'origin' }}
         tags: |
-            ghcr.io/avular-robotics/user-container:origin-latest
-            ghcr.io/avular-robotics/user-container:${{ steps.version.outputs.version }}
+            ghcr.io/avular-robotics/user-container:origin-unstable
         platforms: linux/arm64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

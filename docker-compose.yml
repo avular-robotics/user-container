@@ -1,0 +1,39 @@
+services:
+  user-container:
+    container_name: user
+    build:
+      context: .
+      dockerfile: Dockerfile
+    pull_policy: build
+    # Make sure the container can access the host's network
+    privileged: true
+    ipc: host
+    network_mode: host
+    # Start the container on boot, unless the container is stopped
+    restart: unless-stopped
+    environment:
+      ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
+      RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
+      CYCLONEDDS_URI: "/dds/cyclone_loopback.xml"
+      ROS2CLI_DDS_WRAPPER_DISABLE: 1
+    volumes:
+      # Expose the DDS settings to the container
+      - type: bind
+        source: /data/app/avular/dds
+        target: /dds
+      # Mount a workspace to the container to allow the user to make persistent changes
+      - type: bind
+        source: /data/user/containers/ws
+        target: /home/user/ws
+      # Expose the USB devices to the container
+      - type: bind
+        source: /dev/bus/usb
+        target: /dev/bus/usb
+      - type: bind
+        source: /dev/
+        target: /dev/
+    # Uncomment the following line to automatically start the ROS nodes
+    #command: ros2 launch pkg launch_file.py
+    command: sleep infinity
+    
+    
