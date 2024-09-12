@@ -45,9 +45,9 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        push: ${{ github.ref_name == 'origin' && 'true' || 'false' }}
+        push: ${{ github.ref_name == 'vertex' }}
         tags: |
-            ghcr.io/avular-robotics/user-container:origin-unstable
+            ghcr.io/avular-robotics/user-container:vertex-unstable
         platforms: linux/arm64
         cache-from: type=gha
         cache-to: type=gha,mode=max

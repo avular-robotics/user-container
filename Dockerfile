@@ -55,8 +55,8 @@ RUN sudo chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Setup message definitions
-COPY origin-msgs_arm64_1.0.1.deb /
-RUN apt update && apt install -y /origin-msgs_arm64_1.0.1.deb
+# COPY origin-msgs_arm64_1.0.1.deb /
+# RUN apt update && apt install -y /origin-msgs_arm64_1.0.1.deb
 
 # Install extra dependencies
 # RUN sudo apt update && sudo apt install -y \

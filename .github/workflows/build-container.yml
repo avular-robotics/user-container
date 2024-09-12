@@ -3,7 +3,7 @@ name: Build User Container
 on:
   push:
     tags:
-      - '*'  
+      - '*'
   
 
 jobs:
@@ -37,6 +37,6 @@ jobs:
         context: .
         push: true
         tags: |
-            ghcr.io/avular-robotics/user-container:origin-latest
+            ghcr.io/avular-robotics/user-container:vertex-latest
             ghcr.io/avular-robotics/user-container:${{ steps.version.outputs.version }}
         platforms: linux/arm64

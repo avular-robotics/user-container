@@ -1,13 +1,13 @@
-# User container for the Origin
+# User container for the Vertex
 
-The user container is an example container that can be used to develop on the Origin. It comes pre-installed with ROS and the necessary dependencies to develop for the Origin. 
+The user container is an example container that can be used to develop on the Vertex. It comes pre-installed with ROS and the necessary dependencies to develop for the Vertex. 
 
-This guide will walk you through how to use the user container to develop on the Origin.
+This guide will walk you through how to use the user container to develop on the Vertex.
 
 ## Setting up the user container
-The user container is available on the Origin by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
+The user container is available on the Vertex by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
 
-1. SSH into the Origin
+1. SSH into the Vertex
 2. Remove the current user container files
    
 > [!WARNING]
@@ -16,7 +16,7 @@ The user container is available on the Origin by default at `/data/user/containe
     ```bash
     rm -rf /data/user/containers
     ```
-3. Clone the user container files to the Origin
+3. Clone the user container files to the Vertex
     ```bash
     git clone --branch origin https://github.com/avular-robotics/user-container.git /data/user/containers
     ```
@@ -27,7 +27,7 @@ The user container is available on the Origin by default at `/data/user/containe
     ```
 
 ## Using the user container for development
-We suggest that you do all your development inside the user container. This will ensure that your code runs on the Origin as expected and will not be lost when the Origin is updated.
+We suggest that you do all your development inside the user container. This will ensure that your code runs on the Vertex as expected and will not be lost when the Vertex is updated.
 
 First of all, you need to start the user container. You can do this by running the following command:
 ```bash
@@ -40,7 +40,7 @@ To enter the user container, you can run the following command:
 docker exec -it user /bin/bash
 ```
 
-You can now start developing on the Origin. In the container, we have an user named `user`. 
+You can now start developing on the Vertex. In the container, we have an user named `user`. 
 This user has sudo rights, so you can install packages and run commands as root. When entering 
 the container, you will be in the `/home/user/ws` directory. This is the workspace directory 
 where you can start developing your code. This workspace directory is also mounted from the host OS,
