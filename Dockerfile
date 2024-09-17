@@ -62,6 +62,6 @@ RUN apt update && apt install -y /origin-msgs_arm64_1.0.1.deb
 # RUN sudo apt update && sudo apt install -y \
 #     <package you want to install>
 
-USER USER
+USER user
 WORKDIR /home/user/ws
 CMD ["/bin/bash"]
