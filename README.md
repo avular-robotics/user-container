@@ -8,14 +8,14 @@ This guide will walk you through how to use the user container to develop on the
 The user container is available on the Origin by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
 
 1. SSH into the Origin
+> [!WARNING]
+> The next step will remove all files in the user container directory. Make sure to back up any files you want to keep.
 2. Remove the current user container files
    
-> [!WARNING]
-> This will remove all files in the user container directory. Make sure to back up any files you want to keep.
-    
     ```bash
     rm -rf /data/user/containers
     ```
+
 3. Clone the user container files to the Origin
     ```bash
     git clone --branch origin https://github.com/avular-robotics/user-container.git /data/user/containers
