@@ -62,6 +62,6 @@ ENTRYPOINT ["/entrypoint.sh"]
 # RUN sudo apt update && sudo apt install -y \
 #     <package you want to install>
 
-USER USER
+USER user
 WORKDIR /home/user/ws
 CMD ["/bin/bash"]
