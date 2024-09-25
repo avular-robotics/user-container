@@ -55,8 +55,12 @@ RUN sudo chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Setup message definitions
-# COPY origin-msgs_arm64_1.0.1.deb /
-# RUN apt update && apt install -y /origin-msgs_arm64_1.0.1.deb
+COPY autonomy-msgs_arm64_2.2.0.deb /
+COPY avular-mavros-msgs_arm64_1.1.0.deb /
+COPY mavros-msgs_arm64_1.1.0.deb /
+RUN apt update && apt install -y /autonomy-msgs_arm64_2.2.0.deb
+RUN apt update && apt install -y /avular-mavros-msgs_arm64_1.1.0.deb
+RUN apt update && apt install -y /mavros-msgs_arm64_1.1.0.deb
 
 # Install extra dependencies
 # RUN sudo apt update && sudo apt install -y \
