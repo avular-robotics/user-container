@@ -18,7 +18,7 @@ The user container is available on the Vertex by default at `/data/user/containe
     ```
 3. Clone the user container files to the Vertex
     ```bash
-    git clone --branch origin https://github.com/avular-robotics/user-container.git /data/user/containers
+    git clone --branch vertex https://github.com/avular-robotics/user-container.git /data/user/containers
     ```
 4. Building the user containers
     ```bash
