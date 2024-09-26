@@ -9,6 +9,7 @@ int8 STATUS_RTK_FLOAT=2  # RTK with floating solution, the RTK algorithm hasn’
 int8 STATUS_RTK_FIX=3    # RTK with fixed solution
 int8 status
 
+# Accuracy is not published on Vertex w.r.t. Origin now since on both platforms accuracy is provided in the covariance of the NavSatFix message.
 # Uncertainty of measurement, 1-sigma confidence
 # float32 horizontal_position_accuracy  # Horizontal position uncertainty (meters) expressed as a bivariate normal distribution, 1-sigma then corresponds to 39.4% confidence
 # float32 vertical_position_accuracy    # Vertical position uncertainty (meters) expressed as a univariate normal distribution, 1-sigma then corresponds to 68% confidence
