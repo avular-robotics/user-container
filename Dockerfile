@@ -1,4 +1,4 @@
-FROM ros:humble-perception
+FROM ros:humble
 
 SHELL ["/bin/bash", "-c"]
 
@@ -63,8 +63,6 @@ RUN apt update && apt install -y /cmake-avular_arm64_3.0.0.deb
 RUN apt update && apt install -y /autonomy-msgs_arm64_2.2.0.deb
 
 WORKDIR /home/user/ws
-RUN source /opt/ros/${ROS_DISTRO}/setup.sh \
-    && colcon build
 
 # Install extra dependencies
 # RUN sudo apt update && sudo apt install -y \
