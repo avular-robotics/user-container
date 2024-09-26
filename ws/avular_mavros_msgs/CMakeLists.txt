@@ -13,11 +13,16 @@ find_package(std_msgs REQUIRED)
 set(msg_files
   msg/Barometer.msg
   msg/Battery.msg
+  msg/ControlMode.msg
   msg/GNSSStatus.msg
+  msg/StateReference.msg
   msg/SupervisorCommand.msg
   msg/SupervisorMode.msg
   msg/Timestamping.msg
-  msg/StateReference.msg
+)
+
+set(srv_files
+  srv/SetControlMode.srv
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
