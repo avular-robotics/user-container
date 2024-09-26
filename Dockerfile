@@ -62,8 +62,6 @@ RUN apt update && apt install -y /ament-copyright-avular_arm64_3.0.0.deb
 RUN apt update && apt install -y /cmake-avular_arm64_3.0.0.deb
 RUN apt update && apt install -y /autonomy-msgs_arm64_2.2.0.deb
 
-COPY ws/avular_mavros_msgs /home/user/ws/src/avular_mavros_msgs
-
 WORKDIR /home/user/ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.sh \
     && colcon build
