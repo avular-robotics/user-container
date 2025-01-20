@@ -11,6 +11,15 @@ services:
     network_mode: host
     # Start the container on boot, unless the container is stopped
     restart: unless-stopped
+    # Enable support for GPU usage in the container.
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 'all'
+              capabilities: [ gpu ]
     environment:
       ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
       RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
