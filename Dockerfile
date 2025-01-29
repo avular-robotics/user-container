@@ -55,12 +55,8 @@ RUN sudo chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Setup message definitions
-COPY autonomy-msgs_arm64_2.2.0.deb /
-COPY cmake-avular_arm64_3.0.0.deb / 
-COPY ament-copyright-avular_arm64_3.0.0.deb /
-RUN apt update && apt install -y /ament-copyright-avular_arm64_3.0.0.deb
-RUN apt update && apt install -y /cmake-avular_arm64_3.0.0.deb
-RUN apt update && apt install -y /autonomy-msgs_arm64_2.2.0.deb
+COPY bin/creos-cli_*_arm64.deb /
+RUN apt update && apt install -y /creos-cli_*_arm64.deb
 
 WORKDIR /home/user/ws
 
