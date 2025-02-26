@@ -60,10 +60,9 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 # Install Creos
 RUN wget https://avular.blob.core.windows.net/creos/creos-sdk-0.2.2-arm64.zip \
-    unzip creos-sdk-0.2.2-arm64.zip \
-    rm creos-sdk-0.2.2-arm64.zip \
-    dpkg -i creos-*_*_arm64.deb \
-    rm creos-*_*_arm64.deb
+    && unzip creos-sdk-0.2.2-arm64.zip \
+    && dpkg -i creos-*_*_arm64.deb \
+    && rm creos-*_*_arm64.deb creos-sdk-0.2.2-arm64.zip
 
 WORKDIR /home/user/ws
 
