@@ -54,9 +54,11 @@ COPY entrypoint.sh /
 RUN sudo chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Setup message definitions
-COPY bin/creos-*_*_arm64.deb /
-RUN apt update && apt install -y /creos-*_*_arm64.deb
+# Install Creos
+RUN wget https://avular.blob.core.windows.net/creos/creos-sdk-0.2.2-arm64.zip \
+    unzip creos-sdk-0.2.2-arm64.zip \
+    dpkg -i creos-*_*_arm64.deb \
+    rm creos-sdk-0.2.2-arm64.zip creos-*_*_arm64.deb
 
 WORKDIR /home/user/ws
 
