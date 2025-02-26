@@ -64,8 +64,7 @@ RUN wget https://avular.blob.core.windows.net/creos/creos-sdk-0.2.2-arm64.zip \
     && apt update \
     && dpkg -i creos-*_*_arm64.deb \
     && rm creos-*_*_arm64.deb \
-    && rm creos-sdk-0.2.2-arm64.zip \
-    && rm -rf /var/lib/apt/lists/*
+    && rm creos-sdk-0.2.2-arm64.zip
 
 WORKDIR /home/user/ws
 
