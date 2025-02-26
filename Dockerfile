@@ -15,6 +15,8 @@ RUN apt-get update \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     curl \
+    wget \
+    unzip \
     nano iproute2 vim htop \
     net-tools \
     python3 \
