@@ -15,8 +15,8 @@ RUN apt-get update \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     curl \
-    # wget \
-    # unzip \
+    wget \
+    unzip \
     nano iproute2 vim htop \
     net-tools \
     python3 \
@@ -30,7 +30,7 @@ RUN apt-get update \
     ros-${ROS_DISTRO}-nav-msgs \
     bash-completion \
     # Creos dependencies
-    # nlohmann-json3-dev \
+    nlohmann-json3-dev \
     && rm -rf /etc/apt/apt.conf.d/docker-clean \
     # Setup Rosdep
     && rm /etc/ros/rosdep/sources.list.d/20-default.list \
