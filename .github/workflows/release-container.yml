@@ -1,4 +1,4 @@
-name: Build User Container
+name: Release Container
 
 on:
   push:
