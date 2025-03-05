@@ -15,6 +15,8 @@ RUN apt-get update \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     curl \
+    wget \
+    unzip \
     nano iproute2 vim htop \
     net-tools \
     python3 \
@@ -27,6 +29,8 @@ RUN apt-get update \
     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
     ros-${ROS_DISTRO}-nav-msgs \
     bash-completion \
+    # Creos dependencies
+    nlohmann-json3-dev \
     && rm -rf /etc/apt/apt.conf.d/docker-clean \
     # Setup Rosdep
     && rm /etc/ros/rosdep/sources.list.d/20-default.list \
@@ -54,13 +58,13 @@ COPY entrypoint.sh /
 RUN sudo chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Setup message definitions
-COPY autonomy-msgs_arm64_2.2.0.deb /
-COPY cmake-avular_arm64_3.0.0.deb / 
-COPY ament-copyright-avular_arm64_3.0.0.deb /
-RUN apt update && apt install -y /ament-copyright-avular_arm64_3.0.0.deb
-RUN apt update && apt install -y /cmake-avular_arm64_3.0.0.deb
-RUN apt update && apt install -y /autonomy-msgs_arm64_2.2.0.deb
+# Install Creos
+RUN wget https://avular.blob.core.windows.net/creos/creos-sdk-0.2.2-arm64.zip \
+    && unzip creos-sdk-0.2.2-arm64.zip \
+    && apt update \
+    && dpkg -i creos-*_*_arm64.deb \
+    && rm creos-*_*_arm64.deb \
+    && rm creos-sdk-0.2.2-arm64.zip
 
 WORKDIR /home/user/ws
 

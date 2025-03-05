@@ -20,16 +20,7 @@ services:
             - driver: nvidia
               count: 'all'
               capabilities: [ gpu ]
-    environment:
-      ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
-      RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
-      CYCLONEDDS_URI: "/dds/cyclone_loopback.xml"
-      ROS2CLI_DDS_WRAPPER_DISABLE: 1
     volumes:
-      # Expose the DDS settings to the container
-      - type: bind
-        source: /data/app/avular/dds
-        target: /dds
       # Mount a workspace to the container to allow the user to make persistent changes
       - type: bind
         source: /data/user/containers/ws
@@ -44,5 +35,3 @@ services:
     # Uncomment the following line to automatically start the ROS nodes
     #command: ros2 launch pkg launch_file.py
     command: sleep infinity
-    
-    
