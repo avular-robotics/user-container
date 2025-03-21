@@ -57,4 +57,4 @@ services:
     # Uncomment the following line to automatically start the ROS nodes
     #command: ros2 launch pkg launch_file.py
     # command: sleep infinity
-    command: ros2 run v4l2_camera v4l2_camera_node --ros-args -p video_device:=/dev/video-front -p pixel_format:=GREY -p output_encoding:=mono16 -p image_size:=[1600,1300] -p brightness:=5 -p exposure_absolute:=10
+    command: ros2 run v4l2_camera v4l2_camera_node --ros-args -p video_device:=/dev/video-front -p pixel_format:=GREY -p output_encoding:=mono8 -p image_size:=[1600,1300] -p brightness:=5 -p exposure_absolute:=10
