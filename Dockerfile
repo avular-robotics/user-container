@@ -1,6 +1,8 @@
-FROM ros:humble
+FROM ghcr.io/avular-robotics/ros-humble-dev:latest-stable
 
 SHELL ["/bin/bash", "-c"]
+
+USER root
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends \
@@ -28,6 +30,10 @@ RUN apt-get update \
     ros-${ROS_DISTRO}-rviz2 \
     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
     ros-${ROS_DISTRO}-nav-msgs \
+    ros-${ROS_DISTRO}-v4l2-camera \
+    ros-${ROS_DISTRO}-rosbag2 \
+    ros-${ROS_DISTRO}-rosbag2-storage-mcap \
+    avular-mavros-msgs \
     bash-completion \
     # Creos dependencies
     nlohmann-json3-dev \
@@ -44,7 +50,7 @@ RUN useradd --create-home --shell /bin/bash --groups sudo user \
     && echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/90-user \
     # Show the container name in the terminal
     && echo 'export PS1="\[\033[01;32m\]\u@\h\[\033[01;33m\][user]\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$ "' >> /home/user/.bashrc 
-USER user
+# USER user
 
 # Setup ros
 RUN source /opt/ros/${ROS_DISTRO}/setup.sh \
@@ -59,19 +65,19 @@ RUN sudo chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Install Creos
-RUN wget https://avular.blob.core.windows.net/creos/creos-sdk-0.2.2-arm64.zip \
-    && unzip creos-sdk-0.2.2-arm64.zip \
-    && apt update \
-    && dpkg -i creos-*_*_arm64.deb \
-    && rm creos-*_*_arm64.deb \
-    && rm creos-sdk-0.2.2-arm64.zip
+# RUN wget https://avular.blob.core.windows.net/creos/creos-sdk-0.2.2-arm64.zip \
+#     && unzip creos-sdk-0.2.2-arm64.zip \
+#     && apt update \
+#     && dpkg -i creos-*_*_arm64.deb \
+#     && rm creos-*_*_arm64.deb \
+#     && rm creos-sdk-0.2.2-arm64.zip
 
-WORKDIR /home/user/ws
+# WORKDIR /home/user/ws
 
 # Install extra dependencies
 # RUN sudo apt update && sudo apt install -y \
 #     <package you want to install>
 
-USER user
+# USER user
 WORKDIR /home/user/ws
 CMD ["/bin/bash"]

@@ -1,3 +1,19 @@
+x-common-variables: &common-variables
+  ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
+  DISPLAY: ${DISPLAY}
+  ROS2CLI_DDS_WRAPPER_DISABLE: '1'
+  SSH_AUTH_SOCK: "/run/user/ssh"
+  RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
+  CYCLONEDDS_URI: "/data/app/avular/dds/cyclone_loopback.xml"
+
+x-common-config: &common-config
+  network_mode: host
+  tty: true
+  init: true
+  privileged: True
+  ipc: host
+  restart: 'always'
+
 services:
   user-container:
     container_name: user
@@ -6,9 +22,9 @@ services:
       dockerfile: Dockerfile
     pull_policy: build
     # Make sure the container can access the host's network
-    privileged: true
-    ipc: host
-    network_mode: host
+    environment:
+      <<: *common-variables
+    <<: *common-config
     # Start the container on boot, unless the container is stopped
     restart: unless-stopped
     # Enable support for GPU usage in the container.
@@ -32,6 +48,13 @@ services:
       - type: bind
         source: /dev/
         target: /dev/
+      - type: bind
+        source: /data/app/avular/dds
+        target: /data/app/avular/dds
+      - type: bind
+        source: /tmp
+        target: /tmp
     # Uncomment the following line to automatically start the ROS nodes
     #command: ros2 launch pkg launch_file.py
-    command: sleep infinity
+    # command: sleep infinity
+    command: ros2 run v4l2_camera v4l2_camera_node --ros-args -p video_device:=/dev/video-front -p pixel_format:=GREY -p output_encoding:=mono16 -p image_size:=[1600,1300] -p brightness:=5 -p exposure_absolute:=10

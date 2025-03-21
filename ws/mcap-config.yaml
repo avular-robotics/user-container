@@ -1,0 +1,4 @@
+compression: "Zstd"
+compressionLevel: "Default"
+noChunkCRC: true
+noChunking: false
