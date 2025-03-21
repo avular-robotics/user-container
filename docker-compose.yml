@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    pull_policy: build
+    # pull_policy: build
     # Make sure the container can access the host's network
     environment:
       <<: *common-variables
