@@ -58,6 +58,10 @@ ENTRYPOINT ["/entrypoint.sh"]
 COPY origin-msgs_arm64_1.0.1.deb /
 RUN apt update && apt install -y /origin-msgs_arm64_1.0.1.deb
 
+# Setup Kinova Kortex
+COPY kortex_api-2.6.0.post-py3-none-any.whl /
+RUN python3 -m pip install kortex_api-2.6.0.post-py3-none-any.whl
+
 # Install extra dependencies
 # RUN sudo apt update && sudo apt install -y \
 #     <package you want to install>
