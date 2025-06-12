@@ -13,7 +13,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy, QoSPresetProfiles
 from sensor_msgs.msg import Joy
-from .resource.utilities import TextUtils
+#from .resource.utilities import TextUtils
 
 
 class ControlKinova(Node):
