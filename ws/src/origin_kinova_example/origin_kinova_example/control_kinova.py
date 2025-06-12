@@ -53,10 +53,9 @@ class ControlKinova(Node):
             function to readout the joystick commands and send then to the robot arm
         '''
         self.get_logger().info(f"received joystick command: {msg.axes}")
-        self.get_logger().info(f"received joystick command: {msg.buttons}")
 
         # check of buttong L2 is being pressed
-        if msg.axes[3] < 0.0:
+        if msg.axes[2] < 0.0:
             self.vx = msg.axes[7]
             self.vy = msg.axes[6]
             self.vz = 0.0
@@ -71,6 +70,7 @@ class ControlKinova(Node):
 
         command = Base_pb2.TwistCommand()
 
+        #command.reference_frame = Base_pb2.CARTESIAN_REFERENCE_FRAME_BASE
         command.reference_frame = Base_pb2.CARTESIAN_REFERENCE_FRAME_TOOL
         command.duration = 0
 
