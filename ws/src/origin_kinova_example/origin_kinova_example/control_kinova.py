@@ -16,6 +16,11 @@ from sensor_msgs.msg import Joy
 from .resource import utilities
 
 
+class KinovaArgs():
+    ip = "192.168.100.200"
+    username = "admin"
+    password = "admin"
+
 class ControlKinova(Node):
     def __init__(self, kinova_client) -> None:
         super().__init__('kinova_commander')
@@ -83,9 +88,8 @@ class ControlKinova(Node):
 def main(args=None) -> None:
     rclpy.init(args=args)
 
-    # Parse arguments
-    args_kinova = utilities.parseConnectionArguments()
-    
+    args_kinova = KinovaArgs()
+
     # Create connection to the device and get the router
     with utilities.DeviceConnection.createTcpConnection(args_kinova) as router:
         # Create required services
