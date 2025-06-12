@@ -13,13 +13,19 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy, QoSPresetProfiles
 from sensor_msgs.msg import Joy
-#from .resource.utilities import TextUtils
+from .resource import utilities
 
 
 class ControlKinova(Node):
-    def __init__(self) -> None:
+    def __init__(self, kinova_client) -> None:
         super().__init__('kinova_commander')
         self.get_logger().info('Hello from the ROS Kinova node')
+
+        # store local variables
+        self._kinova_client = kinova_client
+        self.vx = 0.0
+        self.vy = 0.0
+        self.vz = 0.0
         
         qos_default = QoSPresetProfiles.get_from_short_key('system_default')
         qos_latching = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
@@ -31,9 +37,13 @@ class ControlKinova(Node):
             qos_profile = qos_default,
             callback = self.handle_joystick,
         )
+
+        # sent commands to robot arm periodically
+        timer_period = 0.1  # seconds
+        self.timer = self.create_timer(timer_period, self.sent_twist_command)
         
 
-    def handle_text_sentence(self, msg: Joy) -> None:
+    def handle_joystick(self, msg: Joy) -> None:
         '''
             function to readout the joystick commands and send then to the robot arm
         '''
@@ -42,21 +52,50 @@ class ControlKinova(Node):
 
         # check of buttong L2 is being pressed
         if msg.axes[3] < 0.0:
-            vx = msg.axes[0] + msg.axes[1]
-            vy = msg.axes[2] + msg.axes[3]
-            vz = 0.0
+            self.vx = msg.axes[7]
+            self.vy = msg.axes[6]
+            self.vz = 0.0
         else:
-            vx = 0.0
-            vy = -.0
-            vz = msg.axes[0] + msg.axes[1]
+            self.vx = 0.0
+            self.vy = -0.0
+            self.vz = msg.axes[7]
         
-        self.get_logger().info(f"speed commands would be: {vx}, {vy}, {vz}")
+        self.get_logger().info(f"speed commands would be: {self.vx}, {self.vy}, {self.vz}")
+    
+    def sent_twist_command(self):
+
+        command = Base_pb2.TwistCommand()
+
+        command.reference_frame = Base_pb2.CARTESIAN_REFERENCE_FRAME_TOOL
+        command.duration = 0
+
+        twist = command.twist
+        twist.linear_x = self.vx
+        twist.linear_y = self.vy
+        twist.linear_z = self.vz
+        twist.angular_x = 0
+        twist.angular_y = 0
+        twist.angular_z = 0
+
+        self._kinova_client.SendTwistCommand(command)
         
 
 def main(args=None) -> None:
     rclpy.init(args=args)
-    control_kinova = ControlKinova()
-    rclpy.spin(control_kinova)
+
+    # Parse arguments
+    args_kinova = utilities.parseConnectionArguments()
+    
+    # Create connection to the device and get the router
+    with utilities.DeviceConnection.createTcpConnection(args_kinova) as router:
+        # Create required services
+        kinova_client = BaseClient(router)
+        # spin the node
+        control_kinova = ControlKinova(kinova_client)
+        rclpy.spin(control_kinova)
+    
+        kinova_client.stop()
+
     control_kinova.destroy_node()
     rclpy.shutdown()
 
