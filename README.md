@@ -84,7 +84,7 @@ This will launch a ROS2 node that subscribes to the joystick commands of the Ori
 
     - The "up" and "down" buttons on the PS controller define the linear speed in the Z direction.
 
- ![OriginBeforeMarkerIndoorDrive](img/ps_controller.png){width=300; style="display: block; margin: 0 auto"} 
+![OriginBeforeMarkerIndoorDrive](img/ps_controller.png)
 
 Please have a deeper look inside the python code of this ROS2 node `control_kinova.py`. For example to change the frame of the speed from TOOL to BASE frame. Also, it will help you in creating your own ROS2 nodes and packages by which you simultaneously interact with Kinova robot arm and the ROS2 network of the Origin.
 
