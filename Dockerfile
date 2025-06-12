@@ -62,6 +62,9 @@ RUN apt update && apt install -y /origin-msgs_arm64_1.0.1.deb
 COPY kortex_api-2.6.0.post3-py3-none-any.whl /
 RUN python3 -m pip install kortex_api-2.6.0.post3-py3-none-any.whl
 
+# Upgrade protobuf to prevent MutalMapping error
+RUN python3 -m pip install protobuf==3.20.1
+
 # Install extra dependencies
 # RUN sudo apt update && sudo apt install -y \
 #     <package you want to install>
