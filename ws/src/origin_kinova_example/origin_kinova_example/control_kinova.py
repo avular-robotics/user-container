@@ -52,7 +52,6 @@ class ControlKinova(Node):
         '''
             function to readout the joystick commands and send then to the robot arm
         '''
-        self.get_logger().info(f"received joystick command: {msg.axes}")
 
         # check of buttong L2 is being pressed
         if msg.axes[2] < 0.0:
@@ -61,7 +60,7 @@ class ControlKinova(Node):
             self.vz = 0.0
         else:
             self.vx = 0.0
-            self.vy = -0.0
+            self.vy = 0.0
             self.vz = msg.axes[7]
         
         self.get_logger().info(f"speed commands would be: {self.vx}, {self.vy}, {self.vz}")
