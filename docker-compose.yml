@@ -1,6 +1,6 @@
 services:
   user-container:
-    container_name: user
+    container_name: origin_kinova
     build:
       context: .
       dockerfile: Dockerfile
