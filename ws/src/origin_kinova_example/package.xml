@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>origin_kinova_example</name>
+  <version>1.0.0</version>
+  <description>A basic example to control the kinova arm using the joystick controller of the origin one</description>
+  <maintainer email="j.sijs@avular.com">Avular</maintainer>
+  <license>MIT License</license>
+  
+  <depend>rclpy</depend>
+  <depend>origin_msgs</depend>
+  <depend>sensor_msgs</depend>
+  
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
