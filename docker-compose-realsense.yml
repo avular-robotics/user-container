@@ -1,0 +1,58 @@
+services:
+  ros_base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ros-humble-base
+
+  realsense_ros:
+    container_name: realsense_ros
+    build:
+      context: .
+      dockerfile: realsense.Dockerfile
+    pull_policy: build
+    # Make sure the container can access the host's network
+    privileged: true
+    #ipc: host
+    network_mode: "host"
+    user: "root"
+    # Start the container on boot, unless the container is stopped
+    restart: unless-stopped
+    # Enable support for GPU usage in the container.
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 'all'
+              capabilities: [ gpu ]
+    environment:
+      ROS_DOMAIN_ID: ${ROS_DOMAIN_ID}
+      RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
+      CYCLONEDDS_URI: "/dds/cyclone_loopback.xml"
+      ROS2CLI_DDS_WRAPPER_DISABLE: 1
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all
+    devices:
+      - "/dev/i2c-0:/dev/i2c-0"
+    volumes:
+      # Mount a workspace to the container to allow the user to make persistent changes
+      #- type: bind
+      #  source: /data/user/containers/ws
+      #  target: /home/user/ws
+      # Expose the USB devices to the container
+      - type: bind
+        source: /data/app/avular/dds
+        target: /dds
+      - type: bind
+        source: /dev/bus/usb
+        target: /dev/bus/usb
+      - "/dev:/dev"
+    device_cgroup_rules:
+      - 'c 81:* rmw'
+      - 'c 189:* rmw'
+
+    # Uncomment the following line to automatically start the ROS nodes
+    command: bash -c "source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true pointcloud.stream_filter:=0"
+    #command: sleep infinity
