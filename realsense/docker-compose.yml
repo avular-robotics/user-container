@@ -2,7 +2,7 @@ services:
   ros_base:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ../Dockerfile
     image: ros-humble-base
     # Prevent Compose from trying to run the container
     entrypoint: /bin/true
