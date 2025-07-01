@@ -4,12 +4,16 @@ services:
       context: .
       dockerfile: Dockerfile
     image: ros-humble-base
+    # Prevent Compose from trying to run the container
+    entrypoint: /bin/true
 
   realsense_ros:
     container_name: realsense_ros
     build:
       context: .
       dockerfile: realsense.Dockerfile
+    depends_on:
+      - ros_base
     pull_policy: build
     # Make sure the container can access the host's network
     privileged: true
