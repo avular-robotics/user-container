@@ -1,6 +1,8 @@
 services:
   user-container:
-    container_name: user
+    container_name: realsense-add-on
+    group_add:
+      - video
     build:
       context: .
       dockerfile: Dockerfile
@@ -34,4 +36,5 @@ services:
         target: /dev/
     # Uncomment the following line to automatically start the ROS nodes
     #command: ros2 launch pkg launch_file.py
+    #command: gst-launch-1.0 v4l2src device=/dev/video_rs_rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
     command: sleep infinity
