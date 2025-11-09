@@ -59,12 +59,13 @@ RUN sudo chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Install Creos
-RUN wget https://avular.blob.core.windows.net/creos/creos-sdk-0.2.2-arm64.zip \
-    && unzip creos-sdk-0.2.2-arm64.zip \
+RUN wget https://avular.blob.core.windows.net/creos/creos_sdk_0.4.0_jammy_arm64.zip \
+    && unzip creos_sdk_0.4.0_jammy_arm64.zip \
     && apt update \
+    && cd creos_sdk_client_package_Release_jammy_arm64 \
     && dpkg -i creos-*_*_arm64.deb \
     && rm creos-*_*_arm64.deb \
-    && rm creos-sdk-0.2.2-arm64.zip
+    && rm creos_sdk_0.4.0_jammy_arm64.zip
 
 WORKDIR /home/user/ws
 
