@@ -64,7 +64,8 @@ RUN wget https://avular.blob.core.windows.net/creos/creos_sdk_0.4.0_jammy_arm64.
     && apt update \
     && cd creos_sdk_client_package_Release_jammy_arm64 \
     && dpkg -i creos-*_*_arm64.deb \
-    && rm creos-*_*_arm64.deb \
+    && cd .. \
+    && rm -rf creos_sdk_client_package_Release_jammy_arm64 \
     && rm creos_sdk_0.4.0_jammy_arm64.zip
 
 WORKDIR /home/user/ws
