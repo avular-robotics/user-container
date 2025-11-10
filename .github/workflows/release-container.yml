@@ -43,3 +43,5 @@ jobs:
             ghcr.io/avular-robotics/user-container:vertex-latest
             ghcr.io/avular-robotics/user-container:${{ steps.version.outputs.version }}
         platforms: linux/arm64
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
