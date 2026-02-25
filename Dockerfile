@@ -28,6 +28,7 @@ RUN apt-get update \
     ros-${ROS_DISTRO}-rviz2 \
     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
     ros-${ROS_DISTRO}-nav-msgs \
+    ros-${ROS_DISTRO}-nav2-msgs \
     bash-completion \
     # Creos dependencies
     nlohmann-json3-dev \
