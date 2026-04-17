@@ -73,13 +73,13 @@ class SetVelocity(Node):
                 rclpy.shutdown()
                 return
         # sent velocity commands
-        if self.counter == 40:
+        if self.counter == 120:
             self.velocity_msg.linear.x = 0.5 	        # meters per second
             self.velocity_msg.angular.z = 0.0	        # radians per second
             self.counter = 0
-        elif self.counter == 20:
+        elif self.counter == 100:
             self.velocity_msg.linear.x = 0.0 	        # meters per second
-            self.velocity_msg.angular.z = 2*N_PI/3/10	# radians per second
+            self.velocity_msg.angular.z = 2*N_PI/3/5	# radians per second
             self.counter += 1
         else:
             self.counter += 1
