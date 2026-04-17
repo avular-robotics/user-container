@@ -49,8 +49,8 @@ class SetVelocity(Node):
         self.obtained_control = False       
 
         # create a timer for publishing the velocity at 10 Hz
-        self.timer_period = 0.1  # seconds
-        self.counter = 10       # counter for the number of times the velocity command is sent, after which the test will change the velocity command to a different value
+        self.timer_period = 0.1     # seconds
+        self.counter = 0            # counter for the number of times the velocity command is sent, after which the test will change the velocity command to a different value
         self.timer = self.create_timer(self.timer_period, self.timer_callback, callback_group = self.mission_executing_callback_group)     
         
     async def get_control(self):
@@ -80,6 +80,7 @@ class SetVelocity(Node):
         elif self.counter == 10:
             self.velocity_msg.linear.x = 0.0 	    # meters per second
             self.velocity_msg.angular.z = N_PI/3/10	# radians per second
+            self.counter += 1
         else:
             self.counter += 1
 
