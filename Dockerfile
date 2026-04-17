@@ -64,7 +64,7 @@ RUN apt update && apt install -y /origin-msgs_arm64_1.0.1.deb
 
 USER user
 WORKDIR /home/user/ws
-COPY ./src ./src
+COPY ./ws/src ./src
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build"
 RUN echo "source /home/user/ws/install/setup.bash" >> ~/.bashrc
 CMD ["/bin/bash"]
