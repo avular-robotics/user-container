@@ -1,6 +1,6 @@
 services:
   user-container:
-    container_name: user
+    container_name: continuous_driving_test
     build:
       context: .
       dockerfile: Dockerfile
