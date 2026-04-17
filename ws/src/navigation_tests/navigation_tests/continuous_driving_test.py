@@ -77,7 +77,7 @@ class SetVelocity(Node):
             self.velocity_msg.linear.x = 0.5 	        # meters per second
             self.velocity_msg.angular.z = 0.0	        # radians per second
             self.counter = 0
-        elif self.counter == 100:
+        elif self.counter == 20:
             self.velocity_msg.linear.x = 0.0 	        # meters per second
             self.velocity_msg.angular.z = 2*N_PI/3/5	# radians per second
             self.counter += 1
