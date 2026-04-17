@@ -42,7 +42,7 @@ services:
         source: /dev/
         target: /dev/
     # Uncomment the following line to automatically start the ROS nodes
-    #command: ros2 launch pkg launch_file.py
-    command: sleep infinity
+    command: ros2 run navigation_tests continuous_driving_test
+    #command: sleep infinity
     
     
