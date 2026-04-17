@@ -9,8 +9,8 @@ services:
     privileged: true
     ipc: host
     network_mode: host
-    # Start the container on boot, unless the container is stopped
-    restart: unless-stopped
+    # Start the container only when requested
+    restart: 'no'
     # Enable support for GPU usage in the container.
     runtime: nvidia
     deploy:
