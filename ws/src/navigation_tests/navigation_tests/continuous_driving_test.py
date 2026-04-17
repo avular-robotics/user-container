@@ -33,7 +33,7 @@ class SetVelocity(Node):
         # create the velocity publisher
         self.velocity_publisher = self.create_publisher(Twist, 'robot/cmd_vel_user', 10)
         self.velocity_msg = Twist()
-        self.velocity_msg.linear.x = 1.0 	# meters per second
+        self.velocity_msg.linear.x = 0.5 	# meters per second
         self.velocity_msg.angular.z = 0.0   # radians per second
         # create a service for acquiring and releasing control of the robot
         self.request_control = self.create_client(
@@ -73,13 +73,13 @@ class SetVelocity(Node):
                 rclpy.shutdown()
                 return
         # sent velocity commands
-        if self.counter == 20:
-            self.velocity_msg.linear.x = 1.0 	    # meters per second
-            self.velocity_msg.angular.z = 0.0	    # radians per second
+        if self.counter == 40:
+            self.velocity_msg.linear.x = 0.5 	        # meters per second
+            self.velocity_msg.angular.z = 0.0	        # radians per second
             self.counter = 0
-        elif self.counter == 10:
-            self.velocity_msg.linear.x = 0.0 	    # meters per second
-            self.velocity_msg.angular.z = N_PI/3/10	# radians per second
+        elif self.counter == 20:
+            self.velocity_msg.linear.x = 0.0 	        # meters per second
+            self.velocity_msg.angular.z = 2*N_PI/3/10	# radians per second
             self.counter += 1
         else:
             self.counter += 1
