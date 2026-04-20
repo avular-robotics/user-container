@@ -42,7 +42,7 @@ services:
         source: /dev/
         target: /dev/
     # Uncomment the following line to automatically start the ROS nodes
-    # command: bash -c "source /home/user/ws/install/setup.bash && ros2 run navigation_tests continuous_driving_test"
-    command: sleep infinity
+    command: bash -c "source /home/user/ws/install/setup.bash && ros2 run navigation_tests continuous_driving_test"
+    #command: sleep infinity
     
     
