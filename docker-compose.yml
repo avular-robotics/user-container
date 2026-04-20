@@ -31,9 +31,9 @@ services:
         source: /data/app/avular/dds
         target: /dds
       # Mount a workspace to the container to allow the user to make persistent changes
-      - type: bind
-        source: /data/user/containers/ws
-        target: /home/user/ws
+      #- type: bind
+      #  source: /data/user/containers/ws
+      #  target: /home/user/ws
       # Expose the USB devices to the container
       - type: bind
         source: /dev/bus/usb
