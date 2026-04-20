@@ -1,15 +1,23 @@
-# User container for the Origin
+# User container for continuous testing of the Origin
 
-The user container is an example container that can be used to develop on the Origin. It comes pre-installed with ROS and the necessary dependencies to develop for the Origin. 
+The docker container "continuous driving test" is an example container that can be used to continuously test a driving Origin. It comes pre-installed with ROS and the necessary dependencies to develop for the Origin. Once build and started, the docker container will sent velocity commands to the Origin so that it will continously drive in a [equilateral triangle](https://en.wikipedia.org/wiki/Equilateral_triangle) with sides of 1 meter.
 
-This guide will walk you through how to use the user container to develop on the Origin.
+> [!WARNING]
+> Since there is no feedback on the position of the robot, the Origin shall drift from its original path while drving one triangle, after onatoher and after another and so on. So place ensure there is enough space for the Origin to maneuvre.
+
+> [!WARNING]
+> Also, since immediate velocities are sent to the robot, the Origin will have NO OBSTACLE AVOIDANCE and will therefore bump into everything it encounters.
+
+
+This guide will walk you through how to use the docker container to continuously drive the Origin for testing.
 
 ## Setting up the user container
-The user container is available on the Origin by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
+The docker container is available on the Origin by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
 
 1. SSH into the Origin
 > [!WARNING]
 > The next step will remove all files in the user container directory. Make sure to back up any files you want to keep.
+
 2. Remove the current user container files
    
     ```bash
@@ -18,7 +26,7 @@ The user container is available on the Origin by default at `/data/user/containe
 
 3. Clone the user container files to the Origin
     ```bash
-    git clone --branch origin https://github.com/avular-robotics/user-container.git /data/user/containers
+    git clone --branch origin_duration_tests https://github.com/avular-robotics/user-container.git /data/user/containers
     ```
 4. Building the user containers
     ```bash
@@ -26,34 +34,11 @@ The user container is available on the Origin by default at `/data/user/containe
     docker compose build
     ```
 
-## Using the user container for development
-We suggest that you do all your development inside the user container. This will ensure that your code runs on the Origin as expected and will not be lost when the Origin is updated.
-
-First of all, you need to start the user container. You can do this by running the following command:
+## Using the docker container for continuous testing
+In order to start to continuous driving test of the Origin you should start an `ssh` session with the Origin, go the the location of the docker container by running `cd /data/user/containers` and then run the following command in the terminal:
 ```bash
 cd /data/user/containers
 docker compose up -d
 ```
-
-To enter the user container, you can run the following command:
-```bash
-docker exec -it user /bin/bash
-```
-
-You can now start developing on the Origin. In the container, we have an user named `user`. 
-This user has sudo rights, so you can install packages and run commands as root. When entering 
-the container, you will be in the `/home/user/ws` directory. This is the workspace directory 
-where you can start developing your code. This workspace directory is also mounted from the host OS,
-this is done so that you can easily `down` and `up` the container without losing your code. 
-
 > [!WARNING]
-> Be aware that recreating the container will remove all files outside the workspace directory.
-
-### Installing packages
-You probably want to install some packages to develop your code. To test out if the package works you
-can just install it in the container. If you are happy with the package you can add it to the `Dockerfile`.
-After adding the package to the `Dockerfile` you need to rebuild the container. You can do this by running
-the following command from the `/data/user/containers` directory:
-```bash
-docker compose up -d --build
-```
+> the Origin shall immediately start driving the equilateral triangle. In case you need to stop the Origin, then press the e-stop and stop the controller by running the following command in any `ssh` session with the robot: `docker stop continuous_driving_test`.
