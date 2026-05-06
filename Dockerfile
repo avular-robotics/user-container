@@ -32,6 +32,7 @@ RUN apt-get update \
     bash-completion \
     # Creos dependencies
     nlohmann-json3-dev \
+    libgeographic-dev \
     && rm -rf /etc/apt/apt.conf.d/docker-clean \
     # Setup Rosdep
     && rm /etc/ros/rosdep/sources.list.d/20-default.list \
