@@ -11,26 +11,25 @@ The docker container "continuous driving test" is an example container that can 
 
 This guide will walk you through how to use the docker container to continuously drive the Origin for testing.
 
-## Setting up the user container
-The docker container is available on the Origin by default at `/data/user/containers`. If you want to update the user container files, or restore the user container to its default state, you can follow the following steps:
+## Setting up the duration container
 
 1. SSH into the Origin
 > [!WARNING]
-> The next step will remove all files in the user container directory. Make sure to back up any files you want to keep.
+> The next step is to create a new directory for the duration tests and clone the proper git repo.
 
 2. Remove the current user container files
    
     ```bash
-    rm -rf /data/user/containers
+    mkdir /data/user/duration_test_container
     ```
 
 3. Clone the user container files to the Origin
     ```bash
-    git clone --branch origin_duration_tests https://github.com/avular-robotics/user-container.git /data/user/containers
+    git clone --branch origin_duration_tests https://github.com/avular-robotics/user-container.git /data/user/duration_test_containers
     ```
 4. Building the user containers
     ```bash
-    cd /data/user/containers
+    cd /data/user/duration_test_containers
     docker compose build
     ```
 
