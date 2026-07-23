@@ -4,6 +4,9 @@ The realsense add-on user container is an example container that can be used to 
 
 This guide will walk you through how to use the realsense container to develop on the Vertex.
 
+> [!NOTE]
+> This repository provides two containers: **this one** (`realsense-add-on`) for general ROS 2 / GStreamer development and raw video access, and the nested **[`realsense/` container](realsense/README.md)** (`realsense_ros`) for the RealSense ROS 2 API (`rs-enumerate-devices`, camera topics, etc.). See [Using the RealSense ROS2 API](#using-the-realsense-ros2-api) below.
+
 ## Setting up the realsense container
 
 The realsense container is by default not available on the Vertex. If you want to use the realsense user container, or restore the container to its default state, you can follow the following steps:
@@ -54,6 +57,9 @@ the container, you will be in the `/home/user/ws` directory. This is the workspa
 where you can start developing your code. This workspace directory is also mounted from the host OS,
 this is done so that you can easily `down` and `up` the container without losing your code.
 
+> [!NOTE]
+> This workspace is bind-mounted from `/data/user/containers/ws` (the standard user container's workspace), so that directory must exist on the Vertex. Change the `source:` path in [docker-compose.yml](docker-compose.yml) to this repo's own `./ws` for a separate workspace.
+
 > [!WARNING]
 > Be aware that recreating the container will remove all files outside the workspace directory.
 
@@ -72,12 +78,23 @@ docker compose up -d --build
 
 The realsense container can be used to livestream the rgb camera of the realsense, for example as an fpv camera. All the right dependecies are already pre-installed and it is already configured to have access to the linux `video` group. This enables you to setup the livestream without needing sudo rights.
 
+> [!NOTE]
+> **Prerequisites on the host.** If the pipeline fails with `no element "nvv4l2h265enc"` or `no element "rtspclientsink"`, install the missing packages on the **host** (not the container) via SSH:
+> ```bash
+> sudo apt install nvidia-l4t-gstreamer gstreamer1.0-rtsp
+> ```
+>
+> **RTSP server.** `rtspclientsink` pushes the stream to an RTSP server rather than hosting one itself — on the Vertex this is the `mediamtx` system container. If port 8554 isn't reachable, confirm `mediamtx` is running on the host.
+
 #### Manually setting up the livestream
 By default, the container is configured to do "nothing". This means you can enter the container and start the livestream manually. This can be done with the following command:
 
 ```bash
-gst-launch-1.0 v4l2src device=/dev/video_rs_rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
+gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
 ```
+
+> [!NOTE]
+> Device name depends on your Vertex software version: `/dev/video-rs-rgb` or `/dev/video_rs_rgb`. Run `ls /dev | grep video-rs` (or `video_rs`) on the host to check which one applies.
 
 By default, it is configured for minimal latency and with variable bitrate control of 1 Mbps and a peak bitrate of 2 Mbps. This should be enough for a high quality stream which you can view on your remote or on a different device.
 
@@ -105,7 +122,7 @@ You can use VLC to view the livestream. You will need the same link as is descri
 You can also setup the container to automatically start the livestream. this can be done by commenting out the default startup command (add a # in front of `command: sleep infinity`) in the docker-compose file and uncommenting the livestream command (remove the # in front of the sentence). 
 
 ```bash
-command: gst-launch-1.0 v4l2src device=/dev/video_rs_rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
+command: gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
 #command: sleep infinity
 ```
 Make sure the right amount of tabs/spaces are in front of the line.
@@ -119,3 +136,16 @@ To apply this change, run `docker compose up -d --build` again. Once done, the l
 When you get the following error: `NvRmMemInitNvmap failed with Permission denied`, it means you don't have access to the `video` group. By default we add access to the dockerfile, but it is possible the the group ID inside the container is not the same as outside of the container. You can verify this by comparing the ID of `video` both inside and outside of the container with the following command: `cat /etc/group`. 
 If this indeed is not the same, replace the `- video` in the docker-compose file to, for example, `- 44` when the ID is indeed 44.
 
+##### no element "nvv4l2h265enc" / "nvvidconv" / "rtspclientsink"
+This means the host is missing the GStreamer plugin packages the pipeline needs. SSH into the Vertex (not the container) and run:
+```bash
+sudo apt install nvidia-l4t-gstreamer gstreamer1.0-rtsp
+```
+then restart the container (`docker compose up -d --build`) and try again.
+
+##### rs-enumerate-devices: No device detected. Is it plugged in?
+This container doesn't include librealsense — use the `realsense_ros` container instead, see [Using the RealSense ROS2 API](#using-the-realsense-ros2-api) below.
+
+## Using the RealSense ROS2 API
+
+This container does not ship librealsense or the RealSense ROS 2 wrapper. For the full RealSense ROS 2 API (camera/depth/pointcloud topics, `rs-enumerate-devices`, etc.), use the nested container in [`realsense/`](realsense/README.md).

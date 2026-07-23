@@ -1,8 +1,9 @@
 services:
   ros_base:
     build:
-      context: .
-      dockerfile: ../Dockerfile
+      # Parent dir: the root Dockerfile needs entrypoint.sh, which lives there.
+      context: ..
+      dockerfile: Dockerfile
     image: ros-humble-base
     # Prevent Compose from trying to run the container
     entrypoint: /bin/true
