@@ -143,7 +143,10 @@ sudo apt install nvidia-l4t-gstreamer gstreamer1.0-rtsp
 ```
 then restart the container (`docker compose up -d --build`) and try again.
 
-##### rs-enumerate-devices: No device detected. Is it plugged in?
+##### Caught SIGSEGV / InitNVENC: Host1x handle open failed
+This means the container is missing the L4T multimedia libraries needed for hardware video encode. `runtime: nvidia` alone only gives the container the GPU device nodes; the userspace libraries (EGL, NVENC) are injected separately by the L4T container-runtime hooks, gated by `NVIDIA_VISIBLE_DEVICES` and `NVIDIA_DRIVER_CAPABILITIES` in [docker-compose.yml](docker-compose.yml). If these aren't set, expect `EGL failed to initialize`, `Connecting to nvargus-daemon failed`, and a crash at `InitNVENC`. Add them under the `environment:` key and recreate the container (`docker compose up -d --build`).
+
+##### rs-enumerate-devices: command not found
 This container doesn't include librealsense — use the `realsense_ros` container instead, see [Using the RealSense ROS2 API](#using-the-realsense-ros2-api) below.
 
 ## Using the RealSense ROS2 API

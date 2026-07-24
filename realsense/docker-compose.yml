@@ -13,6 +13,9 @@ services:
     build:
       context: .
       dockerfile: realsense.Dockerfile
+      # Links realsense.Dockerfile's `FROM ros-humble-base` to the ros_base build below, so `docker compose build` builds ros_base first instead of trying to pull it.
+      additional_contexts:
+        ros-humble-base: "service:ros_base"
     depends_on:
       - ros_base
     pull_policy: build
@@ -54,10 +57,14 @@ services:
         source: /dev/bus/usb
         target: /dev/bus/usb
       - "/dev:/dev"
+      - type: bind
+        source: /lib/modules
+        target: /lib/modules
+        read_only: true
     device_cgroup_rules:
       - 'c 81:* rmw'
       - 'c 189:* rmw'
 
     # Uncomment the following line to automatically start the ROS nodes
-    command: bash -c "source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true pointcloud.stream_filter:=0"
+    command: bash -c "/fix-imu-permissions.sh; source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true pointcloud.stream_filter:=0"
     #command: sleep infinity
