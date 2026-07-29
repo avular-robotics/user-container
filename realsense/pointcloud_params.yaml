@@ -1,0 +1,2 @@
+pointcloud__neon_.enable: true
+pointcloud__neon_.stream_filter: 0

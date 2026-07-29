@@ -3,6 +3,11 @@ services:
     container_name: realsense-add-on
     group_add:
       - video
+      # 'render' GID for /dev/dri/renderD* (Host1x/NVENC access on this kernel). Not
+      # present as a named group in the container, so it's added by numeric GID; confirm
+      # via `getent group render` on the host if a different CreOS build reports a
+      # different number.
+      - "104"
     build:
       context: .
       dockerfile: Dockerfile

@@ -12,11 +12,8 @@ cd /data/user/add-on/realsense/realsense
 
 ### Building
 
-`ros_base` must be built before `realsense_ros` — `docker compose build` doesn't order dependency builds:
-
 ```bash
-docker compose build ros_base
-docker compose build realsense_ros
+docker compose build
 ```
 
 ## Using the realsense_ros container
@@ -48,9 +45,15 @@ See the [RealSense ROS 2 wrapper](https://github.com/realsenseai/realsense-ros) 
 ## Troubleshooting
 
 ### rs-enumerate-devices: No device detected. Is it plugged in?
-Confirm the camera is visible to the host (via SSH, not inside a container): `lsusb | grep -i intel` should show the RealSense. If not, it's a hardware/connection issue.
+Confirm the camera is visible to the host: `lsusb | grep -i intel`. If that's empty, it's a hardware/connection issue, not this container. (Older librealsense versions refused to report a D435i at all without a working motion module — fixed by the v2.56.3 pin already in this Dockerfile.)
 
-If the host sees it but the container doesn't: this build uses librealsense's V4L2 backend (the recommended default), which needs the host kernel to carry RealSense's V4L2 metadata patches. If those aren't present on this Vertex's kernel, camera detection can fail this way — check with Avular whether the kernel has them. [librealsense's RSUSB backend](https://github.com/realsenseai/librealsense/blob/master/doc/installation_jetson.md) is a documented fallback for this case, but comes with real limitations (e.g. multi-camera support) and isn't enabled here.
+### Gyro/accel (IMU) topics don't appear
+Expected on this Vertex — the kernel is missing `CONFIG_HID_SENSOR_ACCEL_3D`/`CONFIG_HID_SENSOR_GYRO_3D`, so `/dev/iio:device*` never appears. Video/depth/pointcloud are unaffected. Needs a base OS update from Avular; nothing in this container can work around a missing kernel module.
+
+### Pointcloud has no color, depth-to-color alignment isn't published
+Both off by default: `stream_filter` (texture source) is `0` not `2`, and `align_depth.enable` is `false`. Change either in [pointcloud_params.yaml](pointcloud_params.yaml).
+
+Pointcloud settings go through `pointcloud_params.yaml`, not a `pointcloud.*` launch arg — on this ARM64/NEON build librealsense names the filter's parameter `pointcloud__neon_.*`, not `pointcloud.*`, so `rs_launch.py`'s own `pointcloud.enable` argument silently does nothing.
 
 ### Build fails while building `ros_base`
-Build `ros_base` before `realsense_ros` (see [Building](#building)). Verify the `ros_base` service's build context in [docker-compose.yml](docker-compose.yml) is `context: ..` — it needs `entrypoint.sh`, which lives one level up.
+Verify the `ros_base` service's build context in [docker-compose.yml](docker-compose.yml) is `context: ..` — it needs `entrypoint.sh`, which lives one level up.

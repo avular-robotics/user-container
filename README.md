@@ -144,7 +144,11 @@ sudo apt install nvidia-l4t-gstreamer gstreamer1.0-rtsp
 then restart the container (`docker compose up -d --build`) and try again.
 
 ##### Caught SIGSEGV / InitNVENC: Host1x handle open failed
-This means the container is missing the L4T multimedia libraries needed for hardware video encode. `runtime: nvidia` alone only gives the container the GPU device nodes; the userspace libraries (EGL, NVENC) are injected separately by the L4T container-runtime hooks, gated by `NVIDIA_VISIBLE_DEVICES` and `NVIDIA_DRIVER_CAPABILITIES` in [docker-compose.yml](docker-compose.yml). If these aren't set, expect `EGL failed to initialize`, `Connecting to nvargus-daemon failed`, and a crash at `InitNVENC`. Add them under the `environment:` key and recreate the container (`docker compose up -d --build`).
+This means the container's user can't access the hardware encoder. On current CreOS/L4T kernels, NVENC is reached through the DRM render node (`/dev/dri/renderD*`), which is owned by the `render` group — not through the legacy `/dev/nvhost-ctrl` device, which doesn't exist on these kernels at all. If the container's user isn't in the `render` group, NVIDIA's plugin fails to open it and crashes instead of returning a clean error.
+
+Make sure `group_add:` in [docker-compose.yml](docker-compose.yml) includes both `video` and the host's `render` GID (`getent group render` on the host; defaults to `104` if unset here), then recreate the container (`docker compose up -d --build`).
+
+Separately, `NVIDIA_VISIBLE_DEVICES`/`NVIDIA_DRIVER_CAPABILITIES` under `environment:` are needed to avoid `EGL failed to initialize`/`Connecting to nvargus-daemon failed` — a different, earlier failure than the NVENC crash, but easy to hit at the same time.
 
 ##### rs-enumerate-devices: command not found
 This container doesn't include librealsense — use the `realsense_ros` container instead, see [Using the RealSense ROS2 API](#using-the-realsense-ros2-api) below.

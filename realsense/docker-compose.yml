@@ -65,6 +65,10 @@ services:
       - 'c 81:* rmw'
       - 'c 189:* rmw'
 
-    # Uncomment the following line to automatically start the ROS nodes
-    command: bash -c "/fix-imu-permissions.sh; source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true pointcloud.stream_filter:=0"
-    #command: sleep infinity
+    # To launch the camera on container start, uncomment the command below and
+    # comment out the sleep infinity line instead.
+    # pointcloud_params.yaml sets pointcloud__neon_.enable — on this ARM64/NEON build,
+    # librealsense names the pointcloud filter's parameter with a NEON suffix, so
+    # rs_launch.py's own pointcloud.enable launch arg silently does nothing.
+    #command: bash -c "source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py config_file:=/pointcloud_params.yaml"
+    command: sleep infinity
