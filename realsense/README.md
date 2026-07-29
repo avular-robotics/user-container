@@ -18,11 +18,19 @@ docker compose build
 
 ## Using the realsense_ros container
 
-The realsense_ros container starts publishing camera and pointcloud data as soon as the Realsense is connected. If you swap Realsense devices, restart the container.
+By default the container runs `sleep infinity` and does not launch the camera. To launch it automatically on container start, uncomment the `command:` line in [docker-compose.yml](docker-compose.yml), then bring it up:
 
 ```bash
 docker compose up -d realsense_ros
 ```
+
+Alternatively, start the node manually inside the running container:
+
+```bash
+docker exec -it realsense_ros bash -lc "source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py config_file:=/pointcloud_params.yaml"
+```
+
+Once the node is running it publishes camera and pointcloud data.
 
 ### Verifying the RealSense ROS 2 API is working
 

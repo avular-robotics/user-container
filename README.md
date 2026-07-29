@@ -58,7 +58,7 @@ where you can start developing your code. This workspace directory is also mount
 this is done so that you can easily `down` and `up` the container without losing your code.
 
 > [!NOTE]
-> This workspace is bind-mounted from `/data/user/containers/ws` (the standard user container's workspace), so that directory must exist on the Vertex. Change the `source:` path in [docker-compose.yml](docker-compose.yml) to this repo's own `./ws` for a separate workspace.
+> This workspace is bind-mounted from `/data/user/add-on/realsense/ws` on the host (shipped in this repo), so your changes persist across `down`/`up` and can be edited directly from the host.
 
 > [!WARNING]
 > Be aware that recreating the container will remove all files outside the workspace directory.
@@ -79,9 +79,9 @@ docker compose up -d --build
 The realsense container can be used to livestream the rgb camera of the realsense, for example as an fpv camera. All the right dependecies are already pre-installed and it is already configured to have access to the linux `video` group. This enables you to setup the livestream without needing sudo rights.
 
 > [!NOTE]
-> **Prerequisites on the host.** If the pipeline fails with `no element "nvv4l2h265enc"` or `no element "rtspclientsink"`, install the missing packages on the **host** (not the container) via SSH:
+> **Prerequisites on the host.** If the pipeline fails with `no element "nvv4l2h265enc"` or `no element "nvvidconv"`, the host is missing the NVIDIA L4T GStreamer plugins. Install them on the **host** (not the container) via SSH:
 > ```bash
-> sudo apt install nvidia-l4t-gstreamer gstreamer1.0-rtsp
+> sudo apt install nvidia-l4t-gstreamer
 > ```
 >
 > **RTSP server.** `rtspclientsink` pushes the stream to an RTSP server rather than hosting one itself — on the Vertex this is the `mediamtx` system container. If port 8554 isn't reachable, confirm `mediamtx` is running on the host.
@@ -136,17 +136,17 @@ To apply this change, run `docker compose up -d --build` again. Once done, the l
 When you get the following error: `NvRmMemInitNvmap failed with Permission denied`, it means you don't have access to the `video` group. By default we add access to the dockerfile, but it is possible the the group ID inside the container is not the same as outside of the container. You can verify this by comparing the ID of `video` both inside and outside of the container with the following command: `cat /etc/group`. 
 If this indeed is not the same, replace the `- video` in the docker-compose file to, for example, `- 44` when the ID is indeed 44.
 
-##### no element "nvv4l2h265enc" / "nvvidconv" / "rtspclientsink"
-This means the host is missing the GStreamer plugin packages the pipeline needs. SSH into the Vertex (not the container) and run:
+##### no element "nvv4l2h265enc" / "nvvidconv"
+This means the host is missing the NVIDIA L4T GStreamer plugins the pipeline needs. SSH into the Vertex (not the container) and run:
 ```bash
-sudo apt install nvidia-l4t-gstreamer gstreamer1.0-rtsp
+sudo apt install nvidia-l4t-gstreamer
 ```
 then restart the container (`docker compose up -d --build`) and try again.
 
 ##### Caught SIGSEGV / InitNVENC: Host1x handle open failed
 This means the container's user can't access the hardware encoder. On current CreOS/L4T kernels, NVENC is reached through the DRM render node (`/dev/dri/renderD*`), which is owned by the `render` group — not through the legacy `/dev/nvhost-ctrl` device, which doesn't exist on these kernels at all. If the container's user isn't in the `render` group, NVIDIA's plugin fails to open it and crashes instead of returning a clean error.
 
-Make sure `group_add:` in [docker-compose.yml](docker-compose.yml) includes both `video` and the host's `render` GID (`getent group render` on the host; defaults to `104` if unset here), then recreate the container (`docker compose up -d --build`).
+Make sure the container process is in both the `video` and the host's `render` group. The `render` GID defaults to `104`; if `getent group render` on the host reports a different number, set `RENDER_GID` (e.g. in a `.env` file next to [docker-compose.yml](docker-compose.yml)) before recreating the container (`docker compose up -d --build`).
 
 Separately, `NVIDIA_VISIBLE_DEVICES`/`NVIDIA_DRIVER_CAPABILITIES` under `environment:` are needed to avoid `EGL failed to initialize`/`Connecting to nvargus-daemon failed` — a different, earlier failure than the NVENC crash, but easy to hit at the same time.
 

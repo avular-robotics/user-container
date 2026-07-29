@@ -3,11 +3,10 @@ services:
     container_name: realsense-add-on
     group_add:
       - video
-      # 'render' GID for /dev/dri/renderD* (Host1x/NVENC access on this kernel). Not
-      # present as a named group in the container, so it's added by numeric GID; confirm
-      # via `getent group render` on the host if a different CreOS build reports a
-      # different number.
-      - "104"
+      # 'render' GID for /dev/dri/renderD* (Host1x/NVENC access on this kernel). Added by
+      # numeric GID since there's no named 'render' group in the container. Defaults to 104;
+      # override via RENDER_GID (from `getent group render` on the host) if it differs.
+      - "${RENDER_GID:-104}"
     build:
       context: .
       dockerfile: Dockerfile
@@ -31,9 +30,9 @@ services:
       NVIDIA_VISIBLE_DEVICES: all
       NVIDIA_DRIVER_CAPABILITIES: all
     volumes:
-      # Mount a workspace to the container to allow the user to make persistent changes. Shared with the standard user container's workspace, so /data/user/containers must exist. Point this at ./ws instead for a separate workspace.
+      # Mount this add-on's own workspace so host/user edits persist across down/up. Not shared with other containers.
       - type: bind
-        source: /data/user/containers/ws
+        source: /data/user/add-on/realsense/ws
         target: /home/user/ws
       # Expose the USB devices to the container
       - type: bind
