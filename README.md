@@ -1,8 +1,10 @@
 # User container for the Vertex
 
-The user container is an example container that can be used to develop on the Vertex. It comes pre-installed with ROS and the necessary dependencies to develop for the Vertex.
+The user container is an example container that can be used to develop on the Vertex. It comes pre-installed with ROS Humble, Avular [SDK](https://avular-robotics.github.io/vertex_one_user_documentation/sdk/latest/) and the necessary dependencies to develop for the Vertex.
 
-This guide will walk you through how to use the user container to develop on the Vertex.
+The guide below will walk you through how to use the user container to develop on the Vertex.
+
+The Vertex also has a example user container for working with the [Realsense Add-on](https://avular-robotics.github.io/vertex_one_user_documentation/latest/payloads/gen4/realsense_add-on/realsense_add-on_overview.html). This example can be found on the branch [`add-on/realsense`](https://github.com/avular-robotics/user-container/tree/add-on/realsense).
 
 ## Setting up the user container
 
@@ -33,7 +35,7 @@ The user container is available on the Vertex by default at `/data/user/containe
 
 ## Using the user container for development
 
-We suggest that you do all your development inside the user container. This will ensure that your code runs on the Vertex as expected and will not be lost when the Vertex is updated.
+We suggest that you do all your development inside the user container or your own docker container. This will ensure that your code runs on the Vertex as expected and will not be lost when the Vertex is updated.
 
 First of all, you need to start the user container. You can do this by running the following command:
 
@@ -67,3 +69,15 @@ the following command from the `/data/user/containers` directory:
 ```bash
 docker compose up -d --build
 ```
+
+## SDK
+
+The SDK packages are pre-installed in the user container. Which means that you can start developing your code right away. The [SDK Tools examples](https://avular-robotics.github.io/vertex_one_user_documentation/sdk/latest/example_tools.html) are also available.
+
+To discover and test out the SDK try using the [CLI](https://avular-robotics.github.io/vertex_one_user_documentation/sdk/latest/cli.html) or the [ROS2 node](https://avular-robotics.github.io/vertex_one_user_documentation/sdk/latest/ros_wrapper.html).
+
+You can use the user-container Dockerfile as a reference to see how the SDK is installed.
+
+## ROS version
+
+The user container comes pre-installed with ROS Humble but the SDK also supports ROS Jazzy. If you want to use ROS Jazzy, you can change the ROS version in the Dockerfile and change the SDK package download link from `jammy` to `noble`
