@@ -1,8 +1,9 @@
 services:
   ros_base:
     build:
-      context: .
-      dockerfile: ../Dockerfile
+      # Parent dir: the root Dockerfile needs entrypoint.sh, which lives there.
+      context: ..
+      dockerfile: Dockerfile
     image: ros-humble-base
     # Prevent Compose from trying to run the container
     entrypoint: /bin/true
@@ -12,6 +13,9 @@ services:
     build:
       context: .
       dockerfile: realsense.Dockerfile
+      # Links realsense.Dockerfile's `FROM ros-humble-base` to the ros_base build below, so `docker compose build` builds ros_base first instead of trying to pull it.
+      additional_contexts:
+        ros-humble-base: "service:ros_base"
     depends_on:
       - ros_base
     pull_policy: build
@@ -53,10 +57,18 @@ services:
         source: /dev/bus/usb
         target: /dev/bus/usb
       - "/dev:/dev"
+      - type: bind
+        source: /lib/modules
+        target: /lib/modules
+        read_only: true
     device_cgroup_rules:
       - 'c 81:* rmw'
       - 'c 189:* rmw'
 
-    # Uncomment the following line to automatically start the ROS nodes
-    command: bash -c "source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true pointcloud.stream_filter:=0"
-    #command: sleep infinity
+    # To launch the camera on container start, uncomment the command below and
+    # comment out the sleep infinity line instead.
+    # pointcloud_params.yaml sets pointcloud__neon_.enable — on this ARM64/NEON build,
+    # librealsense names the pointcloud filter's parameter with a NEON suffix, so
+    # rs_launch.py's own pointcloud.enable launch arg silently does nothing.
+    #command: bash -c "source /home/user/ws/install/setup.bash && ros2 launch realsense2_camera rs_launch.py config_file:=/pointcloud_params.yaml"
+    command: sleep infinity

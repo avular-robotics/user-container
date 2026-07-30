@@ -3,6 +3,10 @@ services:
     container_name: realsense-add-on
     group_add:
       - video
+      # 'render' GID for /dev/dri/renderD* (Host1x/NVENC access on this kernel). Added by
+      # numeric GID since there's no named 'render' group in the container. Defaults to 104;
+      # override via RENDER_GID (from `getent group render` on the host) if it differs.
+      - "${RENDER_GID:-104}"
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,10 +26,13 @@ services:
             - driver: nvidia
               count: 'all'
               capabilities: [ gpu ]
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all
     volumes:
-      # Mount a workspace to the container to allow the user to make persistent changes
+      # Mount this add-on's own workspace so host/user edits persist across down/up. Not shared with other containers.
       - type: bind
-        source: /data/user/containers/ws
+        source: /data/user/add-on/realsense/ws
         target: /home/user/ws
       # Expose the USB devices to the container
       - type: bind
@@ -36,5 +43,6 @@ services:
         target: /dev/
     # Uncomment the following line to automatically start the ROS nodes
     #command: ros2 launch pkg launch_file.py
-    #command: gst-launch-1.0 v4l2src device=/dev/video_rs_rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
+    # Device name varies by Vertex software version: /dev/video-rs-rgb or /dev/video_rs_rgb. Check `ls /dev | grep video-rs` on the host if this device isn't found.
+    #command: gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://127.0.0.1:8554/realsense
     command: sleep infinity
