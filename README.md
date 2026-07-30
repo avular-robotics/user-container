@@ -90,7 +90,7 @@ The realsense container can be used to livestream the rgb camera of the realsens
 By default, the container is configured to do "nothing". This means you can enter the container and start the livestream manually. This can be done with the following command:
 
 ```bash
-gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
+gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://127.0.0.1:8554/realsense
 ```
 
 > [!NOTE]
@@ -122,7 +122,7 @@ You can use VLC to view the livestream. You will need the same link as is descri
 You can also setup the container to automatically start the livestream. this can be done by commenting out the default startup command (add a # in front of `command: sleep infinity`) in the docker-compose file and uncommenting the livestream command (remove the # in front of the sentence). 
 
 ```bash
-command: gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
+command: gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://127.0.0.1:8554/realsense
 #command: sleep infinity
 ```
 Make sure the right amount of tabs/spaces are in front of the line.

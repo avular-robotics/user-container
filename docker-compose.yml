@@ -44,5 +44,5 @@ services:
     # Uncomment the following line to automatically start the ROS nodes
     #command: ros2 launch pkg launch_file.py
     # Device name varies by Vertex software version: /dev/video-rs-rgb or /dev/video_rs_rgb. Check `ls /dev | grep video-rs` on the host if this device isn't found.
-    #command: gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://0.0.0.0:8554/realsense
+    #command: gst-launch-1.0 v4l2src device=/dev/video-rs-rgb ! videoconvert ! video/x-raw,format=BGRx ! nvvidconv ! nvv4l2h265enc control-rate=0 bitrate=1000000 peak-bitrate=2000000 preset-level=1 ! h265parse ! rtspclientsink location=rtsp://127.0.0.1:8554/realsense
     command: sleep infinity

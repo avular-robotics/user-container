@@ -33,7 +33,7 @@ RUN apt-get update --allow-insecure-repositories && apt-get install --no-install
     rm -rf /var/lib/apt/lists/*
 
 # Clone the ROS wrapper
-# Note the Realsense wrapper version should be compatible with the librealsense version (ending to the same version nubmer)
+# Note the Realsense wrapper version should be compatible with the librealsense version (ending to the same version number)
 WORKDIR /home/user/ws/src
 RUN git clone https://github.com/realsenseai/realsense-ros.git -b 4.56.3
 
